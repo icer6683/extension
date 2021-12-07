@@ -1,32 +1,33 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+  <meta charset="utf-8" />
   <link rel="stylesheet" href="popup.css">
+  <script src="content.js"></script>
 </head>
 <title> Pomodoro Timer </title>
 
 <body>
   <h1>Pomodoro Timer</h1>
-  <form>
-    Interval: <br> <input type="number" name="interval" min=5 max=60 step=5 required>
-    <br>
-    Break: <br> <input type="number" name="break" min=1 max=20 required>
-    <br>
-    Rounds: <br> <input type="number" name="iterations" min=2 max=8 required>
-    <br>
-    <input type="submit"><br>
-    <br>
-
-  </form>
+  <div>
+    <form id="form">
+      Interval: <br> <input type="number" name="interval" min=5 max=60 step=5 required />
+      <br>
+      Break: <br> <input type="number" name="break" min=1 max=20 required />
+      <br>
+      Rounds: <br> <input type="number" name="iterations" min=2 max=8 required />
+      <br>
+      <input type="submit" value="Send" /><br>
+      <br>
+    </form>
+  </div>
 
   <div id="clock">
   </div>
-  <script src="clock.js">
-  </script>
 
   <a href="https://www.andrewlou.dev">Developed by Andrew Lou</a>
+  <script src="form.js"></script>
 </body>
-</script>
 
 </html>
