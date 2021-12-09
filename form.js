@@ -1,19 +1,25 @@
 var time;
+var time_in_seconds;
+var minutes;
+var seconds;
 var rest;
 var rounds;
 var pause = false;
 var cancel = false;
+var countdown;
 
 document.getElementById("form").addEventListener("submit", handleSubmit);
 document.getElementById("form").addEventListener("submit", extractParameters);
-document.getElementById("form").addEventListener("submit", function () { displayTimer() });
+document.getElementById("form").addEventListener("submit", function () { displayTimer(1) });
 document.getElementById("form").addEventListener("submit", function () { timer() });
 
 function handleSubmit(e) {
   "use strict";
-  document.getElementById("form").style.display = "none";
+  displayForm(0);
   e.preventDefault();
 }
+
+function ddig(num) { return num > 9 ? num : "0" + num; }
 
 function extractParameters(form) {
   time = form.target.elements[0].value;
@@ -21,19 +27,53 @@ function extractParameters(form) {
   rounds = form.target.elements[2].value;
 }
 
-function displayTimer() {
-  document.getElementById("pomodoro_timer").style.display = "block";
-  document.getElementById("control_buttons").style.display = "block";
+function displayForm(num) {
+  if (num == 1) {
+    document.getElementById("form").style.display = "block";
+  } else if (num == 0) {
+    document.getElementById("form").style.display = "none";
+  }
+}
+
+document.getElementById("pause").addEventListener("click", function () { stopTimer() });
+document.getElementById("cancel").addEventListener("click", function () { cancelTimer() });
+
+function displayTimer(num) {
+  if (num == 1) {
+    document.getElementById("pomodoro_timer").style.display = "block";
+    document.getElementById("control_buttons").style.display = "block";
+  } else if (num == 0) {
+    document.getElementById("pomodoro_timer").style.display = "none";
+    document.getElementById("control_buttons").style.display = "none";
+  }
 }
 
 function timer() {
-  var seconds = time * 60;
-  setInterval(function () {
-    document.getElementById("pomodoro_timer").innerHTML = "00:" + seconds;
-    seconds--;
-    if (seconds < 0) {
-      clearInterval(timer);
+  var time_in_seconds = time * 60;
+  document.getElementById("minutes").innerHTML = ddig(time);
+  document.getElementById("seconds").innerHTML = ddig(00);
+
+  countdown = setInterval(function () {
+    time_in_seconds--;
+    minutes = Math.floor(time_in_seconds / 60);
+    seconds = time_in_seconds % 60;
+    document.getElementById("minutes").innerHTML = ddig(minutes);
+    document.getElementById("seconds").innerHTML = ddig(seconds);
+    if (time_in_seconds < 0) {
+      clearInterval(countdown);
     }
   }, 1000);
+}
+
+function cancelTimer() {
+  clearInterval(countdown);
+  document.getElementById("minutes").innerHTML = ddig(time);
+  document.getElementById("seconds").innerHTML = ddig(00);
+  displayForm(0);
+  displayTimer(1);
+}
+
+function stopTimer() {
+  clearInterval(countdown);
 }
 

@@ -8,5 +8,11 @@
   ],
   "action": {
     "default_popup": "popup.html"
+  },
+  "background": {
+    "scripts": [
+      "form.js"
+    ],
+    "persistent": false
   }
 }
