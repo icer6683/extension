@@ -1,0 +1,19 @@
+{
+  "name": "pomodoro-timer",
+  "version": "1.0.0",
+  "description": "A pomodoro timer for all your studying needs",
+  "main": "popup.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/icer6683/extension.git"
+  },
+  "author": "Andrew Lou",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/icer6683/extension/issues"
+  },
+  "homepage": "https://github.com/icer6683/extension#readme"
+}
