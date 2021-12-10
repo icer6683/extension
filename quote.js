@@ -7,12 +7,19 @@ async function fetchText() {
 
   if (response.status === 200) {
     let data = await response.json();
-    quote = data.content;
-    author = data.author;
-    console.log(typeof quote);
-    console.log(JSON.stringify(quote));
+    return data;
   } else {
     quote = "Oops. We couldn't fetch quote.";
+    return quote;
   }
 }
-fetchText();
+
+async function getQuote() {
+  let quotable = await fetchText();
+  quote = quotable.content;
+  author = quotable.author;
+  console.log(JSON.stringify(quote));
+  document.getElementById("quotes").innerHTML = quote + " -- " + author;
+}
+
+getQuote();
