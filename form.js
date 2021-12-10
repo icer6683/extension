@@ -14,7 +14,6 @@ document.getElementById("form").addEventListener("submit", function () { display
 document.getElementById("form").addEventListener("submit", function () { timer() });
 
 function handleSubmit(e) {
-  "use strict";
   displayForm(0);
   e.preventDefault();
 }
@@ -87,4 +86,3 @@ function startTimerAgain() {
   document.getElementById("pause").style.display = "inline";
   document.getElementById("start_again").style.display = "none";
 }
-
