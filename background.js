@@ -1,30 +1,35 @@
 let timerTime;
 let timerID;
 let timeRemaining;
+let pause = false;
 
 chrome.runtime.onConnect.addListener(function (port1) {
   port1.onMessage.addListener(function (msg1) {
     if (msg1.cmd === "give time") {
-      var seconds = parseInt(msg1.time);;
+      var seconds = msg1.time;
       timerTime = new Date(new Date().getTime() + seconds * 1000);
-      if (!timeID) {
+      if (!timerID) {
         timerID = setTimeout(() => { alert("Done!") }, timerTime.getTime() - Date.now());
       }
-    }
-    else if (msg1.cmd === "get the time") {
-      port1.postMessage({ timeLeft: timerTime });
+      pause = false;
+    } else if (msg1.cmd === "get the time") {
+      if (pause === true) {
+        timerTime = new Date(new Date().getTime() + timeRemaining * 1000);
+      }
+      port1.postMessage({ timeLeft: timerTime, checkPause: pause });
     } else if (msg1.cmd === "pause") {
-      if (timeID) {
+      pause = true;
+      if (timerID) {
         clearTimeout(timerID);
       }
-      timeRemaining = parseInt(msg1.timeNow);
+      timeRemaining = msg1.timeNow;
     } else if (msg1.cmd === "start again") {
-      timerTime = new Date(new Date().getTime() + timeRemaining * 1000);
-      timerID = setTimeout(() => { alert("Done!") }, timerTime.getTime() - Date.now());
+      pause = false;
     } else if (msg1.cmd === "cancel") {
-      if (timeID) {
+      if (timerID) {
         clearTimeout(timerID);
       }
+      pause = false;
       timerTime = null;
     }
   })

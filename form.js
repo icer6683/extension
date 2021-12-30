@@ -11,12 +11,12 @@ var port1 = chrome.runtime.connect({
 
 document.getElementById("form").addEventListener("submit", handleSubmit);
 document.getElementById("form").addEventListener("submit", extractParameters);
-document.getElementById("form").addEventListener("submit", function () { displayTimer(1) });
 document.getElementById("form").addEventListener("submit", function () { timer() });
-document.addEventListener("DOMContentLoaded", function () { getTime(); });
+document.addEventListener("DOMContentLoaded", function () { getTimeLeft(); });
 
 function handleSubmit(e) {
   displayForm(0);
+  displayTimer(1)
   e.preventDefault();
 }
 
@@ -59,31 +59,36 @@ function displayTimer(num) {
 
 function timer() {
   port1.postMessage({ time: time_in_seconds, cmd: "give time" });
-  getTime();
+  getTimeLeft();
 }
 
-function runTimer(time) {
+function runTimer(time, pause) {
   if (time.getTime() > Date.now()) {
     displayTimer(1);
     displayForm(0);
-    if (!countdown) {
-      countdown = setInterval(function () {
-        time_in_seconds = Math.round((time.getTime() - Date.now()) / 1000);
-        minutes = Math.floor(time_in_seconds / 60);
-        seconds = time_in_seconds % 60;
-        document.getElementById("minutes").innerHTML = ddig(minutes);
-        document.getElementById("seconds").innerHTML = ddig(seconds);
-      }, 1000)
+    if (!countdown && !pause) {
+      countdown = setInterval(displayTime, 1000, time);
+    } else if (pause) {
+      stopTimer();
+      displayTime(time);
     }
   }
 }
 
-function getTime() {
+function displayTime(time) {
+  time_in_seconds = Math.round((time.getTime() - Date.now()) / 1000);
+  minutes = Math.floor(time_in_seconds / 60);
+  seconds = time_in_seconds % 60;
+  document.getElementById("minutes").innerHTML = ddig(minutes);
+  document.getElementById("seconds").innerHTML = ddig(seconds);
+}
+
+function getTimeLeft() {
   port1.postMessage({ cmd: "get the time" });
   port1.onMessage.addListener(function (msg) {
     if (msg.timeLeft) {
       const timeLeft = new Date(msg.timeLeft);
-      runTimer(timeLeft);
+      runTimer(timeLeft, msg.checkPause);
     }
   })
 }
@@ -110,6 +115,7 @@ function stopTimer() {
 }
 
 function startTimerAgain() {
+  port1.postMessage({ cmd: "start again" });
   timer();
   document.getElementById("pause").style.display = "inline";
   document.getElementById("start_again").style.display = "none";
