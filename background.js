@@ -27,7 +27,7 @@ chrome.runtime.onConnect.addListener(function (port1) {
     } else if (msg1.cmd === "give time") {
       timerMaker(seconds);
     } else if (msg1.cmd === "get the time") {
-      port1.postMessage({ timeLeft: timerTime, checkPause: pause, roundsLeft: roundsLeft });
+      port1.postMessage({ timeLeft: timerTime, checkPause: pause, roundsLeft: roundsLeft, study: study });
     } else if (msg1.cmd === "pause") {
       pause = true;
       if (timerID) {
@@ -69,7 +69,7 @@ function roundChanger() {
 }
 
 function timerMaker(time) {
-  timerTime = new Date(new Date().getTime() + time * 1000);
+  timerTime = new Date(new Date().getTime() + (time + 1) * 1000);
   if (!timerID) {
     timerID = setTimeout(console.log("done"), timerTime.getTime() - Date.now());
   }

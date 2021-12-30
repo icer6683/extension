@@ -28,10 +28,15 @@ let countdown;
  */
 let timeLeft;
 
-/** This variables is the number of rounds left, which includes the current 
+/** This variable is the number of rounds left, which includes the current 
  * rounds. It is updated after every round has completed.
 */
 let roundsLeft;
+
+/** This variable is a boolean. It is true when in study round and false when
+ * in rest round.
+ */
+let study;
 
 /** This is a long-lived communication that handles all the messaging between 
  * the popup script and the background script. 
@@ -120,6 +125,11 @@ function runTimer(time, pause) {
   if (time.getTime() > Date.now()) {
     displayTimer(1);
     displayForm(0);
+    if (study) {
+      document.getElementById("study_rest").innerHTML = "STUDY";
+    } else {
+      document.getElementById("study_rest").innerHTML = "REST";
+    }
     document.getElementById("rounds_left_in").innerHTML = ddig(roundsLeft);
     if (!countdown && !pause) {
       countdown = setInterval(displayTime, 1000, time);
@@ -167,6 +177,7 @@ function getTimeLeft() {
     if (msg.timeLeft) {
       timeLeft = new Date(msg.timeLeft);
       roundsLeft = msg.roundsLeft;
+      study = msg.study;
       runTimer(timeLeft, msg.checkPause);
     }
     port1.onMessage.removeListener(checkTime);
