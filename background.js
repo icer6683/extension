@@ -1,6 +1,6 @@
 let timerTime;
 let timerID;
-let timeRemaining;
+var timeRemaining;
 let pause = false;
 
 chrome.runtime.onConnect.addListener(function (port1) {

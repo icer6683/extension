@@ -5,6 +5,7 @@ var seconds;
 var rest;
 var rounds;
 let countdown;
+let timeLeft;
 var port1 = chrome.runtime.connect({
   name: "Start_Timer"
 });
@@ -69,6 +70,7 @@ function runTimer(time, pause) {
     if (!countdown && !pause) {
       countdown = setInterval(displayTime, 1000, time);
     } else if (pause) {
+      time_in_seconds = Math.round((time.getTime() - Date.now()) / 1000);
       stopTimer();
       displayTime(time);
     }
@@ -87,7 +89,7 @@ function getTimeLeft() {
   port1.postMessage({ cmd: "get the time" });
   port1.onMessage.addListener(function (msg) {
     if (msg.timeLeft) {
-      const timeLeft = new Date(msg.timeLeft);
+      timeLeft = new Date(msg.timeLeft);
       runTimer(timeLeft, msg.checkPause);
     }
   })
