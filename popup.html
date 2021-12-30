@@ -12,17 +12,17 @@
   <h1>Pomodoro Timer</h1>
   <div>
     <form id="form">
-      Interval: <br> <input type="number" name="interval" min=5 max=60 step=5 required />
+      Interval: <br> <input type="number" name="interval" min=0.1 max=60 step=1 required />
       <br>
-      Break: <br> <input type="number" name="break" min=1 max=20 required />
+      Break: <br> <input type="number" name="break" min=0.2 max=20 required />
       <br>
-      Rounds: <br> <input type="number" name="iterations" min=2 max=8 required />
+      Rounds: <br> <input type="number" name="iterations" min=1 max=8 required />
       <br>
       <input type="submit" value="Start" /><br>
       <br>
     </form>
   </div>
-  <div id="pomodoro_timer" style="display: none">
+  <div id="pomodoro_timer" style="display: none; color: blue">
     <span id="minutes"></span>:<span id="seconds"></span>
   </div>
   <div id="control_buttons">
@@ -30,6 +30,7 @@
     <button id="start_again" style="display: none">Continue</button>
     <button id="cancel" style="display: none">Cancel</button>
   </div>
+  <div id="rounds_left_out" style="display: none"> Rounds Left: <span id="rounds_left_in"></span></div>
 
   <div id="quotes">
   </div>
