@@ -97,12 +97,14 @@ function displayTimer(num) {
     document.getElementById("cancel").style.display = "inline";
     document.getElementById("start_again").style.display = "none";
     document.getElementById("rounds_left_out").style.display = "block";
+    document.getElementById("study_rest").style.display = "block";
   } else if (num === 0) {
     document.getElementById("pomodoro_timer").style.display = "none";
     document.getElementById("pause").style.display = "none";
     document.getElementById("cancel").style.display = "none";
     document.getElementById("start_again").style.display = "none";
     document.getElementById("rounds_left_out").style.display = "none";
+    document.getElementById("study_rest").style.display = "none";
   }
 }
 
@@ -191,7 +193,7 @@ function cancelTimer() {
   port1.postMessage({ cmd: "cancel" });
   clearInterval(countdown);
   countdown = null;
-  document.getElementById("minutes").innerHTML = ddig(time);
+  document.getElementById("minutes").innerHTML = ddig(00);
   document.getElementById("seconds").innerHTML = ddig(00);
   document.getElementById("form").reset();
   displayForm(1);

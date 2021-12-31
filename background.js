@@ -71,7 +71,7 @@ function roundChanger() {
 function timerMaker(time) {
   timerTime = new Date(new Date().getTime() + (time + 1) * 1000);
   if (!timerID) {
-    timerID = setTimeout(console.log("done"), timerTime.getTime() - Date.now());
+    timerID = setTimeout(() => { alert("Round Done!"); }, timerTime.getTime() - Date.now());
   }
   pause = false;
 }
