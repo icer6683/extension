@@ -10,5 +10,5 @@ setInterval(
     if (hour == 0) { hour = 12; }
     if (minute < 10) { minute = "0" + minute; }
     if (second < 10) { second = "0" + second; }
-    document.getElementById("clock").innerHTML = hour + ":" + minute + ":" + second + " " + semi;
+    document.getElementById("clock").innerHTML = hour + ":" + minute + " " + semi;
   }, 1000);

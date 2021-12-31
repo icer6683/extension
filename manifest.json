@@ -2,16 +2,14 @@
   "name": "Pomodoro Timer",
   "description": "Adjustable Pomodoro timer to fit all your study needs",
   "version": "1.0",
-  "manifest_version": 2,
+  "manifest_version": 3,
   "permissions": [
     "storage"
   ],
-  "browser_action": {
+  "action": {
     "default_popup": "popup.html"
   },
   "background": {
-    "scripts": [
-      "background.js"
-    ]
+    "service_worker": "background.js"
   }
 }

@@ -28,10 +28,15 @@ let countdown;
  */
 let timeLeft;
 
-/** This variables is the number of rounds left, which includes the current 
+/** This variable is the number of rounds left, which includes the current 
  * rounds. It is updated after every round has completed.
 */
 let roundsLeft;
+
+/** This variable is a boolean. It is true when in study round and false when
+ * in rest round.
+ */
+let study;
 
 /** This is a long-lived communication that handles all the messaging between 
  * the popup script and the background script. 
@@ -92,12 +97,14 @@ function displayTimer(num) {
     document.getElementById("cancel").style.display = "inline";
     document.getElementById("start_again").style.display = "none";
     document.getElementById("rounds_left_out").style.display = "block";
+    document.getElementById("study_rest").style.display = "block";
   } else if (num === 0) {
     document.getElementById("pomodoro_timer").style.display = "none";
     document.getElementById("pause").style.display = "none";
     document.getElementById("cancel").style.display = "none";
     document.getElementById("start_again").style.display = "none";
     document.getElementById("rounds_left_out").style.display = "none";
+    document.getElementById("study_rest").style.display = "none";
   }
 }
 
@@ -120,6 +127,11 @@ function runTimer(time, pause) {
   if (time.getTime() > Date.now()) {
     displayTimer(1);
     displayForm(0);
+    if (study) {
+      document.getElementById("study_rest").innerHTML = "STUDY";
+    } else {
+      document.getElementById("study_rest").innerHTML = "REST";
+    }
     document.getElementById("rounds_left_in").innerHTML = ddig(roundsLeft);
     if (!countdown && !pause) {
       countdown = setInterval(displayTime, 1000, time);
@@ -167,6 +179,7 @@ function getTimeLeft() {
     if (msg.timeLeft) {
       timeLeft = new Date(msg.timeLeft);
       roundsLeft = msg.roundsLeft;
+      study = msg.study;
       runTimer(timeLeft, msg.checkPause);
     }
     port1.onMessage.removeListener(checkTime);
@@ -180,7 +193,7 @@ function cancelTimer() {
   port1.postMessage({ cmd: "cancel" });
   clearInterval(countdown);
   countdown = null;
-  document.getElementById("minutes").innerHTML = ddig(time);
+  document.getElementById("minutes").innerHTML = ddig(00);
   document.getElementById("seconds").innerHTML = ddig(00);
   document.getElementById("form").reset();
   displayForm(1);
