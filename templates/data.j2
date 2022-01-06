@@ -1,0 +1,73 @@
+<html>
+
+<head>
+  <title>Timer Stats Database</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='data.css') }}">
+</head>
+
+<body>
+  <h1>Date: {{ date }}</h1>
+  <div class="chartBox">
+    <canvas id="data_graph"></canvas>
+  </div>
+  {% block javascript %}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script type="text/javascript">
+  Chart.defaults.font = {
+    size: 16,
+    family: 'Verdana'
+  };
+
+  var barColors = "red"
+  //setup block
+  const data = {
+    labels: JSON.parse({{ labels| tojson  }}),
+    datasets: [{ 
+      label: "Time Spent",
+      backgroundColor: barColors,
+      data: JSON.parse({{ data| tojson}}),
+    }],
+  };
+
+  //config block
+  
+  const config = {
+    type: 'bar',
+    data,
+    options: {
+      scales: {
+        y: { 
+          title: {
+            display: true,
+            text: 'Hours',
+            font: {
+              size: 22,
+              family: 'Verdana'
+            }
+          }
+        },
+        x: { 
+          title: {
+            display: true,
+            text: 'Activities',
+            font: {
+              size: 22,
+              family: 'Verdana'
+            }
+          }
+        }
+      }
+    }
+  };
+
+  //render block
+  const data_graph = new Chart(
+    document.getElementById('data_graph'),
+    config
+  );
+
+  </script>
+  {% endblock %}
+</body>
+
+</html>
