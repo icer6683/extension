@@ -2,7 +2,7 @@
 
 <head>
   <title>Timer Stats Database</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='data.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='data_range.css') }}">
 </head>
 
 <body>
@@ -10,6 +10,12 @@
   <h1>Activity: {{ activity_str }}</h1>
   <div class="chartBox">
     <canvas id="data_graph"></canvas>
+  </div>
+
+  <div class="settings">
+  <form method="GET" onkeydown="return event.key != 'Enter';">
+    <button class="reset"> Graph Settings </button>
+  </form>
   </div>
 
   {% block javascript %}
@@ -64,13 +70,6 @@
             tooltipFormat:'DD',
             unit:'day'
           },
-          title: {
-            display: true,
-            text: 'Date',
-            font: {
-              size: 22,
-            }
-          }
         }
       },
       animation: {

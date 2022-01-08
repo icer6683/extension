@@ -47,7 +47,7 @@ def __repr__(self):
 @ app.route("/stats", methods=["GET", "POST"])
 def stats_home():
     if request.method == 'POST':
-        activity = request.form.get('activity')
+        activity = request.form.get('activity').lower().strip()
         # session["activity"] = activity
         current_activity = Activity.query.filter_by(name=activity).first()
 
@@ -68,7 +68,7 @@ def stats_home():
 @ app.route("/stats/<int:current_date>", methods=["GET", "POST"])
 def stats_date(current_date):
     if request.method == 'POST':
-        activity = request.form.get('activity')
+        activity = request.form.get('activity').lower().strip()
         day = Day.query.filter_by(id=current_date).first()
         if day:
             current_activity = day.activities.filter_by(name=activity).first()
@@ -140,7 +140,7 @@ def get_iso():
         data=Day.query.order_by(Day.id).all()
         start_date_str = request.form.get('start_date')
         end_date_str = request.form.get('end_date')
-        activity = request.form.get('activity')
+        activity = request.form.get('activity').lower().strip()
 
         start_date = date_conversion_iso_form(start_date_str)
         start_date = start_date.isoformat()
@@ -158,7 +158,15 @@ def get_iso():
                 if current_activity:
                     data_values.append(current_activity.time)
                 else:
-                    data_values.append(0)
+                    data_values.append(0.0)
+        first_entry = labels[0]
+        last_entry = labels[len(labels) - 1]
+        if first_entry != start_date:
+            labels.insert(0, start_date)
+            data_values.insert(0, 0.0)
+        if last_entry != end_date:
+            labels.append(end_date)
+            data_values.append(0.0)
         labels_json=json.dumps(labels)
         data_values_json=json.dumps(data_values)
         return render_template('graph_data_range.j2', 
