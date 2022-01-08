@@ -118,6 +118,9 @@ def date_conversion_iso(date):
     date_str=date_conversion(date)
     return datetime.strptime(date_str, '%m/%d/%Y')
 
+def date_conversion_iso_form(date):
+    return datetime.strptime(date, '%Y-%m-%d')
+
 # Outputs a graph of the activities from a certain day
 @ app.route("/data/<int:current_date>")
 def get_data_date(current_date):
@@ -135,15 +138,20 @@ def get_data_date(current_date):
 def get_iso():
     if request.method=='POST':
         data=Day.query.order_by(Day.id).all()
-        start_date = request.form.get('start_date')
-        end_date = request.form.get('end_date')
+        start_date_str = request.form.get('start_date')
+        end_date_str = request.form.get('end_date')
         activity = request.form.get('activity')
+
+        start_date = date_conversion_iso_form(start_date_str)
+        start_date = start_date.isoformat()
+        end_date =date_conversion_iso_form(end_date_str)
+        end_date = end_date.isoformat()
         labels=[]
         data_values=[]
-        
         for date in data:
             date_iso=date_conversion_iso(date.id)
-            if date_iso.isoformat() >  start_date and date_iso.isoformat()<end_date:
+            if date_iso.isoformat() >=  start_date and date_iso.isoformat() <= end_date:
+                print(end_date)
                 date_iso_str = date_iso.isoformat()
                 labels.append(date_iso_str)
                 current_activity = date.activities.filter_by(name=activity).first()
@@ -155,7 +163,7 @@ def get_iso():
         data_values_json=json.dumps(data_values)
         return render_template('graph_data_range.j2', 
             data = data_values_json, labels = labels_json, activity_str = activity,
-            start_str = start_date, end_str = end_date)
+            start_str = start_date_str, end_str = end_date_str)
     return render_template('request_data_range.html')
 
 @ app.before_first_request

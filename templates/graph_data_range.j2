@@ -29,14 +29,17 @@
   var gradient = ctx.createLinearGradient(0,0,0,400);
   gradient.addColorStop(1,"rgba(35,156,148,1)");
   gradient.addColorStop(0,"rgba(141,229,201,1)");
-  
+
+  let labels=JSON.parse({{ labels| tojson }});
+  let data_values= JSON.parse({{ data| tojson }});
+  console.log("labels array: " + labels);
   //setup block 
   const data = {
-    labels: JSON.parse({{ labels| tojson }}),
+    labels,
     datasets: [{
       label: 'Time Spent',
       backgroundColor: gradient,
-      data: JSON.parse({{ data| tojson }})
+      data: data_values
     }]
   };
 
@@ -58,6 +61,7 @@
         x: {
           type: 'time',
           time: {
+            tooltipFormat:'DD',
             unit:'day'
           },
           title: {
@@ -83,7 +87,7 @@
           }
         return delay;
         }
-      }
+      },
     }
   };
  
