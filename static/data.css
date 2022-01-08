@@ -1,0 +1,13 @@
+h1{
+ text-align: center;
+ font-size: 24px;
+ font-family: 'Helvetica';
+}
+
+.chartBox{
+  /* control the width of the chart, given it has a 2-1 aspect ratio */
+  width:90%; 
+  /* centers the chart within the div when the width is not 100% */
+  margin:0 auto;
+}
+

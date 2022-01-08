@@ -1,0 +1,103 @@
+<html>
+
+<head>
+  <title>Timer Stats Database</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='data_range.css') }}">
+</head>
+
+<body>
+  <h1>Time Period: {{ start_str }} to {{ end_str }}</h1>
+  <h1>Activity: {{ activity_str }}</h1>
+  <div class="chartBox">
+    <canvas id="data_graph"></canvas>
+  </div>
+
+  <div class="settings">
+  <form method="GET" onkeydown="return event.key != 'Enter';">
+    <button class="reset"> Graph Settings </button>
+  </form>
+  </div>
+
+  {% block javascript %}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@^3"></script>
+  <script src="https://cdn.jsdelivr.net/npm/luxon@^2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@^1"></script>
+  <script type="text/javascript">
+
+  let delayed; 
+  Chart.defaults.font = {
+    size: 16,
+    family: 'Verdana'
+  };
+
+  // create a gradient for the bar colors
+  var ctx = document.getElementById('data_graph').getContext('2d');
+  var gradient = ctx.createLinearGradient(0,0,0,400);
+  gradient.addColorStop(1,"rgba(35,156,148,1)");
+  gradient.addColorStop(0,"rgba(141,229,201,1)");
+
+  let labels=JSON.parse({{ labels| tojson }});
+  let data_values= JSON.parse({{ data| tojson }});
+  console.log("labels array: " + labels);
+  //setup block 
+  const data = {
+    labels,
+    datasets: [{
+      label: 'Time Spent',
+      backgroundColor: gradient,
+      data: data_values
+    }]
+  };
+
+  //config block
+  const config = {
+    type: 'bar',
+    data,
+    options: {
+      scales: {
+        y: { 
+          title: {
+            display: true,
+            text: 'Hours',
+            font: {
+              size: 22,
+            }
+          }
+        },
+        x: {
+          type: 'time',
+          time: {
+            tooltipFormat:'DD',
+            unit:'day'
+          },
+        }
+      },
+      animation: {
+        easing: 'easeOutCubic',
+        onComplete: () => {
+          delayed = true;
+        },
+        //Delays the render animation between consecutive bars
+        delay: (context) => {
+          let delay = 0;
+          if (context.type === 'data' && context.mode === 'default' && !delayed) {
+            //the delay of the animation depends on the index on the x-axis
+            delay = context.dataIndex * 200 + context.datasetIndex * 200;
+          }
+        return delay;
+        }
+      },
+    }
+  };
+ 
+  //render block
+  const data_graph = new Chart(
+    document.getElementById('data_graph'),
+    config
+  );
+
+  </script>
+  {% endblock %}
+</body>
+
+</html>

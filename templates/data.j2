@@ -1,0 +1,95 @@
+<html>
+
+<head>
+  <title>Timer Stats Database</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='data.css') }}">
+</head>
+
+<body>
+  <h1>Date: {{ date_str }}</h1>
+  <div class="chartBox">
+    <canvas id="data_graph"></canvas>
+  </div>
+
+  {% block javascript %}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@^3"></script>
+  <script type="text/javascript">
+
+  Chart.defaults.font = {
+    size: 16,
+    family: 'Verdana'
+  };
+
+  let delayed;
+
+  // create a gradient for the bar colors
+  var ctx=document.getElementById('data_graph').getContext('2d');
+  var gradient = ctx.createLinearGradient(0, 0, 0, 400);
+  gradient.addColorStop(1,"rgba(35,156,148,1)");
+  gradient.addColorStop(0,"rgba(141,229,201,1)");
+  
+  //setup block
+  const data = {
+    labels: JSON.parse({{ labels| tojson }}),
+    datasets: [{ 
+      label: 'Time Spent',
+      backgroundColor: gradient,
+      data: JSON.parse({{ data| tojson }}),
+    }]
+  };
+
+  //config block
+  
+  const config = {
+    type: 'bar',
+    data,
+    options: {
+      scales: {
+        y: { 
+          title: {
+            display: true,
+            text: 'Hours',
+            font: {
+              size: 22,
+            }
+          }
+        },
+        x: { 
+          title: {
+            display: true,
+            text: 'Activities',
+            font: {
+              size: 22,
+            }
+          }
+        }
+      },
+      animation: {
+        easing: 'easeOutCubic',
+        onComplete: () => {
+          delayed = true;
+        },
+        //Delays the render animation between consecutive bars
+        delay: (context) => {
+          let delay = 0;
+          if (context.type === 'data' && context.mode === 'default' && !delayed) {
+            //the delay of the animation depends on the index on the x-axis
+            delay = context.dataIndex * 200 + context.datasetIndex * 200;
+          }
+        return delay;
+        }
+      }
+    }
+  };
+
+  //render block
+  const data_graph = new Chart(
+    document.getElementById('data_graph'),
+    config
+  );
+
+  </script>
+  {% endblock %}
+</body>
+
+</html>
