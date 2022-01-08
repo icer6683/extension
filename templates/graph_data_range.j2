@@ -6,40 +6,41 @@
 </head>
 
 <body>
-  <h1>Date: {{ date_str }}</h1>
+  <h1>Time Period: {{ start_str }} to {{ end_str }}</h1>
+  <h1>Activity: {{ activity_str }}</h1>
   <div class="chartBox">
     <canvas id="data_graph"></canvas>
   </div>
 
   {% block javascript %}
   <script src="https://cdn.jsdelivr.net/npm/chart.js@^3"></script>
+  <script src="https://cdn.jsdelivr.net/npm/luxon@^2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@^1"></script>
   <script type="text/javascript">
 
+  let delayed; 
   Chart.defaults.font = {
     size: 16,
     family: 'Verdana'
   };
 
-  let delayed;
-
   // create a gradient for the bar colors
-  var ctx=document.getElementById('data_graph').getContext('2d');
-  var gradient = ctx.createLinearGradient(0, 0, 0, 400);
+  var ctx = document.getElementById('data_graph').getContext('2d');
+  var gradient = ctx.createLinearGradient(0,0,0,400);
   gradient.addColorStop(1,"rgba(35,156,148,1)");
   gradient.addColorStop(0,"rgba(141,229,201,1)");
   
-  //setup block
+  //setup block 
   const data = {
     labels: JSON.parse({{ labels| tojson }}),
-    datasets: [{ 
+    datasets: [{
       label: 'Time Spent',
       backgroundColor: gradient,
-      data: JSON.parse({{ data| tojson }}),
+      data: JSON.parse({{ data| tojson }})
     }]
   };
 
   //config block
-  
   const config = {
     type: 'bar',
     data,
@@ -54,10 +55,14 @@
             }
           }
         },
-        x: { 
+        x: {
+          type: 'time',
+          time: {
+            unit:'day'
+          },
           title: {
             display: true,
-            text: 'Activities',
+            text: 'Date',
             font: {
               size: 22,
             }
@@ -81,7 +86,7 @@
       }
     }
   };
-
+ 
   //render block
   const data_graph = new Chart(
     document.getElementById('data_graph'),
